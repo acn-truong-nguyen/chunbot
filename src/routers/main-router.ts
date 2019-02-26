@@ -1,10 +1,12 @@
-import express from "express";
-import { getTestApi } from "../controllers/main-controller";
+import express from 'express';
+import { getTestApi } from '../controllers/main-controller';
+import { echoMessage } from '../controllers/incoming-message-controller';
 
-let router = express.Router();
+const router = express.Router();
 
-router.get("/test", getTestApi);
+router.get('/test', getTestApi);
+router.post('/echo', echoMessage);
 
 export let getRouter = () => {
   return router;
-}
+};

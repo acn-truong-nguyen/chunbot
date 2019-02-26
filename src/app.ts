@@ -1,23 +1,23 @@
-import express from "express";
-import bodyParser from "body-parser";
-import { getRouter } from "./routers/main-router";
+import express from 'express';
+import bodyParser from 'body-parser';
+import { getRouter } from './routers/main-router';
 class App {
 
-    public app: express.Application;
+  public app: express.Application;
 
-    constructor() {
-        this.app = express();
-        this.config();        
-    }
+  constructor() {
+    this.app = express();
+    this.config();
+  }
 
-    private config(): void{
+  private config(): void {
         // support application/json type post data
-        this.app.use(bodyParser.json());
-        //support application/x-www-form-urlencoded post data
-        this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(bodyParser.json());
+        // support application/x-www-form-urlencoded post data
+    this.app.use(bodyParser.urlencoded({ extended: false }));
         // Routing
-        this.app.use("/", getRouter() );
-    }
+    this.app.use('/', getRouter());
+  }
 
 }
 
