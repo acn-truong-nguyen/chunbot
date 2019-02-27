@@ -1,4 +1,6 @@
 import app from './app';
+import './common/env';
+
 const PORT = 3000;
 
 app.listen(PORT, () => {
