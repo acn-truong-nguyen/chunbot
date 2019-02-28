@@ -4,7 +4,10 @@ import path from 'path';
 
 export const logger = winston.createLogger({
   level: 'info',
-  format: winston.format.json(),
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
   transports: [
     new DailyRotateFile({
       filename: '%DATE%-error.log',
@@ -24,7 +27,9 @@ if (process.env.NODE_ENV !== 'production') {
   logger.add(new winston.transports.Console({
     format: winston.format.combine(
       winston.format.colorize(),
-      winston.format.simple(),
+      winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+      winston.format.printf(info =>
+        `${info.timestamp} ${info.level}: ${info.message} ${info.splat || ''}`),
     ),
   }));
 }

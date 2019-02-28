@@ -28,6 +28,7 @@ export let echoMessage = async (req: Request, res: Response) => {
     method: 'POST',
     json: true,
   };
+  logger.info(`Sending request to Jenkins server. Job: ${jobName}, Culprit: ${req.body.from.name}`);
   try {
     await request(options);
     responseMsg.text = 'I have sent signals to Jenkins server.'
@@ -101,6 +102,7 @@ export let incomingJenkins = async (req: Request, res: Response) => {
     targets: [{ os: 'default', uri: buildInfo.buildUrl }],
   };
   const messageCard = new MSTeamMessageCard(color, summary, [section], [potentialAction]);
+  logger.info(`Sending message to MSTeams server ${JSON.stringify(messageCard)}`);
   try {
     await messageCard.sendMessage(process.env.MSTEAM_INCOMING_WEBHOOK_URL);
   } catch (err) {
