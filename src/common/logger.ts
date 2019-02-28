@@ -23,13 +23,18 @@ export const logger = winston.createLogger({
   ],
 });
 
+const colorizer = winston.format.colorize();
 if (process.env.NODE_ENV !== 'production') {
   logger.add(new winston.transports.Console({
     format: winston.format.combine(
-      winston.format.colorize(),
       winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-      winston.format.printf(info =>
-        `${info.timestamp} ${info.level}: ${info.message} ${info.splat || ''}`),
+      winston.format.simple(),
+      winston.format.printf((info) => {
+        const { timestamp, level, message, ...args } = info;
+        return colorizer.colorize(level,
+                                  `${timestamp} ${level}: ${message} ${Object.keys(args).length ?
+                                  JSON.stringify(args, null, 2) : ''}`);
+      }),
     ),
   }));
 }

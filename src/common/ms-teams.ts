@@ -1,4 +1,5 @@
 import request from 'request-promise';
+import { logger } from './logger';
 
 interface MSTeamsMessage {
   '@type': string;
@@ -64,6 +65,7 @@ export class MSTeamMessageCard {
       body: this.message,
       json: true,
     };
+    logger.info(`Send message to MS Teams ${JSON.stringify(options)}`)
     await request(options);
   }
 }
