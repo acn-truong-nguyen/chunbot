@@ -57,7 +57,7 @@ export class MSTeamMessageCard {
     };
   }
   async sendMessage(webhookURL?: string) {
-    const uri = webhookURL || process.env.MSTEAM_INCOMING_WEBHOOK_URL;
+    const uri = webhookURL || process.env.MSTEAMS_INCOMING_WEBHOOK_URL;
     const options: any = {
       uri,
       method: 'POST',

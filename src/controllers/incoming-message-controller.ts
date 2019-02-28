@@ -104,7 +104,7 @@ export let incomingJenkins = async (req: Request, res: Response) => {
   const messageCard = new MSTeamMessageCard(color, summary, [section], [potentialAction]);
   logger.info(`Sending message to MSTeams server ${JSON.stringify(messageCard)}`);
   try {
-    await messageCard.sendMessage(process.env.MSTEAM_INCOMING_WEBHOOK_URL);
+    await messageCard.sendMessage(process.env.MSTEAMS_INCOMING_WEBHOOK_URL);
   } catch (err) {
     logger.error(err);
     res.status(500)
