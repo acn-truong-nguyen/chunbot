@@ -65,7 +65,7 @@ export class MSTeamMessageCard {
       body: this.message,
       json: true,
     };
-    logger.info(`Send message to MS Teams ${JSON.stringify(options)}`)
+    logger.info(`Sending message to MS Teams ${JSON.stringify(options)}`);
     await request(options);
   }
 }

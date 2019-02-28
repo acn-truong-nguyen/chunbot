@@ -11,11 +11,15 @@ RUN apk add --no-cache --virtual .gyp \
       python \
       make \
       g++ \
+      tzdata \
  && npm install \
  && apk del .gyp 
 
 # Copy source code to working directory
 COPY . .
+
+#Environment variable
+ENV TZ Asia/Tokyo
 
 # using node.js port
 EXPOSE 3000
