@@ -6,6 +6,7 @@ import { MSTeamMessageCard,
 import { defaultConfig } from '../common/config';
 import { toLocalDate, getJobName } from '../common/utility';
 import request = require('request-promise');
+import { logger } from '../common/logger';
 
 export let echoMessage = async (req: Request, res: Response) => {
   res.status(200);
@@ -32,10 +33,10 @@ export let echoMessage = async (req: Request, res: Response) => {
     responseMsg.text = 'I have sent signals to Jenkins server.'
                      + ' Your request will be processed shortly.';
   } catch (err) {
-    console.log(err);
     if (err.statusCode === 404) {
       responseMsg.text = `Job ${jobName} does not exist.`;
     } else {
+      logger.error(err);
       responseMsg.text = 'Sorry, I cannot process your request.'
                        + ' There might be some problem with Jenkins server';
     }
@@ -103,7 +104,7 @@ export let incomingJenkins = async (req: Request, res: Response) => {
   try {
     await messageCard.sendMessage(process.env.MSTEAM_INCOMING_WEBHOOK_URL);
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     res.status(500)
     .send('Internal Error');
     return;
