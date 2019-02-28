@@ -11,6 +11,7 @@ RUN apk add --no-cache --virtual .gyp \
       python \
       make \
       g++ \
+ && npm install \
  && apk del .gyp 
 
 # Copy source code to working directory
