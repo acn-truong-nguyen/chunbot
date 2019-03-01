@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import { MSTeamMessageCard,
          MSTeamsMessageSection,
          MSTeamsMessageSectionFacts,
-       } from '../common/ms-teams';
+       } from '../services/ms-teams';
 import { defaultConfig } from '../common/config';
 import { toLocalDate, getJobName } from '../common/utility';
 import request = require('request-promise');
 import { logger } from '../common/logger';
 
-export let echoMessage = async (req: Request, res: Response) => {
+export let buildJenkins = async (req: Request, res: Response) => {
   res.status(200);
   const jobName = getJobName(req.body.text);
   const responseMsg = {

@@ -1,5 +1,5 @@
 import request from 'request-promise';
-import { logger } from './logger';
+import { logger } from '../common/logger';
 
 interface MSTeamsMessage {
   '@type': string;
