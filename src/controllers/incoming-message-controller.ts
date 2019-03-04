@@ -9,13 +9,13 @@ import request = require('request-promise');
 import { logger } from '../common/logger';
 
 export let buildJenkins = async (req: Request, res: Response) => {
-  res.status(200);
-  const jobName = getJobName(req.body.text);
+  const data = JSON.parse(req.body);
+  const jobName = getJobName(data.text);
   const responseMsg = {
     type: 'message',
     textFormat: 'plain',
     text: 'Sorry, I cannot process your request. Please try again.'
-        + ' Request format: jenkins build <Job name>',
+        + ' Request format: `jenkins build <Job name>`',
   };
   if (!jobName) {
     res.send(JSON.stringify(responseMsg));
@@ -24,11 +24,11 @@ export let buildJenkins = async (req: Request, res: Response) => {
   const jenkinsURL = `${process.env.JENKINS_URL}/job/${jobName}`;
   const options: any = {
     uri: `${jenkinsURL}`
-       + `/buildWithParameters?CULPRIT=${req.body.from.name}`,
+       + `/buildWithParameters?CULPRIT=${data.from.name}`,
     method: 'POST',
     json: true,
   };
-  logger.info(`Sending request to Jenkins server. Job: ${jobName}, Culprit: ${req.body.from.name}`);
+  logger.info(`Sending request to Jenkins server. Job: ${jobName}, Culprit: ${data.from.name}`);
   try {
     await request(options);
     responseMsg.text = 'I have sent signals to Jenkins server.'
@@ -42,15 +42,15 @@ export let buildJenkins = async (req: Request, res: Response) => {
                        + ' There might be some problem with Jenkins server';
     }
   } finally {
-    res.send(JSON.stringify(responseMsg));
+    res.status(200)
+       .send(JSON.stringify(responseMsg));
   }
 };
 
 export let incomingJenkins = async (req: Request, res: Response) => {
   const buildInfo = req.body;
   let color;
-  let summary = `Update from build ${buildInfo.jobName}`
-              + `${buildInfo.displayName} started by ${buildInfo.user}`;
+  let summary = `Update from ${buildInfo.jobName}`;
   let facts: [MSTeamsMessageSectionFacts] = ([
     {
       name: 'Status',
@@ -70,7 +70,8 @@ export let incomingJenkins = async (req: Request, res: Response) => {
     },
     {
       name: 'Changes',
-      value: buildInfo.changeSets,
+      value: (buildInfo.changeSets && buildInfo.changeSets !== '[]') ?
+        buildInfo.changeSets : 'No changes',
     },
   ]) as any;
   switch (buildInfo.status) {
@@ -86,7 +87,7 @@ export let incomingJenkins = async (req: Request, res: Response) => {
     default:
       facts = facts.filter(e => e.name !== 'Completion time') as any;
       color = defaultConfig.TEAMS.THEME_COLOR.INFO;
-      summary = `User ${buildInfo.user} started job ${buildInfo.jobName}${buildInfo.displayName}`;
+      summary = `User ${buildInfo.user} started job ${buildInfo.jobName}`;
       break;
   }
   const section: MSTeamsMessageSection = {

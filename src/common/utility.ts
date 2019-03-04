@@ -1,6 +1,7 @@
-export function toLocalDate(epochDate: number): string {
-  const date = new Date(epochDate);
-  return date.toString();
+export function toLocalDate(date: number | Date): string {
+  const localDate = new Date(date);
+  return `${localDate.toISOString()
+    .slice(0, 10)} ${localDate.toLocaleTimeString('ja-jp', {timeZoneName: 'short'})}`;
 }
 
 export function replaceAll(target: string, searchValue: string, replaceValue: string): string {

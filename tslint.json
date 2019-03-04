@@ -15,6 +15,7 @@
     "max-statements": [1, 15],
     "newline-per-chained-call": "warn",
     "no-boolean-literal-compare": true,
+    "no-console": true,
     "no-irregular-whitespace": "warn",
     "no-use-before-define": [2, "nofunc"],
     "no-increment-decrement": false,
@@ -37,6 +38,10 @@
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
     "prefer-template": "off",
-    "keyword-spacing": [2, {"before": true, "after": true}]
+    "keyword-spacing": [2, {"before": true, "after": true}],
+    "variable-name": [true,
+      "check-format",
+      "allow-leading-underscore"
+    ]
   }
 }
