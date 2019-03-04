@@ -7,6 +7,7 @@ import { defaultConfig } from '../common/config';
 import { toLocalDate, getJobName } from '../common/utility';
 import request = require('request-promise');
 import { logger } from '../common/logger';
+import { Options } from 'request';
 
 export let buildJenkins = async (req: Request, res: Response) => {
   const data = JSON.parse(req.body);
@@ -22,7 +23,7 @@ export let buildJenkins = async (req: Request, res: Response) => {
     return;
   }
   const jenkinsURL = `${process.env.JENKINS_URL}/job/${jobName}`;
-  const options: any = {
+  const options: Options = {
     uri: `${jenkinsURL}`
        + `/buildWithParameters?CULPRIT=${data.from.name}`,
     method: 'POST',
@@ -30,12 +31,13 @@ export let buildJenkins = async (req: Request, res: Response) => {
   };
   logger.info(`Sending request to Jenkins server. Job: ${jobName}, Culprit: ${data.from.name}`);
   try {
-    await request(options);
+    await request(options)
+         .auth(process.env.JENKINS_USERNAME, process.env.JENKINS_PASSWORD);
     responseMsg.text = 'I have sent signals to Jenkins server.'
                      + ' Your request will be processed shortly.';
   } catch (err) {
     if (err.statusCode === 404) {
-      responseMsg.text = `Job ${jobName} does not exist.`;
+      responseMsg.text = `Job ${jobName} does not exist. Please confirm ${jenkinsURL}`;
     } else {
       logger.error(err);
       responseMsg.text = 'Sorry, I cannot process your request.'
