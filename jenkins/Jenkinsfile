@@ -1,3 +1,5 @@
+def slackNotifier
+
 pipeline {
   agent any
   stages {
@@ -9,6 +11,15 @@ pipeline {
         git branch: 'master', url:'https://github.com/acn-truong-nguyen/chunbot.git'
         // Check if source code is downloaded
         sh "ls -lat"   
+      }
+    }
+    stage('Load build library') {
+      steps{
+        echo "Workspace ${workspace}@common/slackNotifier.groovy"
+        script{
+          slackNotifier = load "${workspace}/common/slackNotifier.groovy"
+          slackNotifier.call('STARTED', 'test')
+        }
       }
     }
     stage('Build image') {
@@ -46,6 +57,14 @@ pipeline {
           """      
         }
       }
+    }
+  }
+  post {
+    always {
+      script{
+        slackNotifier.call(currentBuild.currentResult, 'test')
+      }
+      cleanWs()
     }
   }
 }
